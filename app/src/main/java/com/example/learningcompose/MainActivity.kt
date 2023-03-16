@@ -3,17 +3,17 @@ package com.example.learningcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
@@ -32,8 +32,37 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-                LearningConstraintLayout()
-            }
+            LearningAnimation()
+        }
+    }
+}
+
+@Composable
+fun LearningAnimation()
+{
+    var sizeState by remember{ mutableStateOf(200.dp) }
+    val size by animateDpAsState(
+        targetValue = sizeState,
+        spring(
+            Spring.DampingRatioHighBouncy
+        )
+//        tween(
+//            durationMillis = 3000,
+//            delayMillis = 300,
+//            easing = LinearOutSlowInEasing
+//        )
+    )
+
+    Box(modifier = Modifier
+        .size(size)
+        .background(Color.Red),
+        contentAlignment = Alignment.Center)
+    {
+        Button(onClick = {
+            sizeState += 50.dp
+        }){
+            Text("Increase Size")
+        }
     }
 }
 
@@ -55,6 +84,7 @@ fun LearningConstraintLayout()
             height = Dimension.value(100.dp)
         }
         constrain(redBox)
+
         {
             top.linkTo(parent.top)
             start.linkTo(greenBox.end)
